@@ -1,0 +1,21 @@
+[Unit]
+Description=telewall
+After=syslog.target
+After=network.target
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+PIDFile=/run/telewall.pid
+WorkingDirectory=/opt/telewall
+OOMScoreAdjust=-1000
+
+ExecStart=/opt/telewall/telewall
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s QUIT $MAINPID
+Restart=always
+TimeoutSec=6
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,29 @@
+{
+  "App": [
+    {
+      "DbusZoneName": "trusted",
+      "TelegramBotDenyAccessMessage": "Access Deny",
+      "TelegramBotToken": "botkey",
+      "TelegramBotPanicTime": 1,
+      "TelegramBotErrorUserInput": "Wrong command or wrong ip address",
+      "TelegramBotCommandEnableIP": "The <enable ip> command were sent",
+      "TelegramBotCommandDisableIP": "The <disable ip> command were sent",
+      "TelegramBotCommandDisableAll": "The <disable all ip> command were sent",
+      "TelegramBotCommandPanic": "network lock command were sent",
+      "TelegramBotCompleteReloadEnable": true,
+      "TelegramBotIPListIsEmpty": "List Empty",
+      "TelegramBotPanicModeOff": "Panic Mode Off",
+      "TelegramBotDebugMode": false,
+      "TelegramBotProxyEnable": false,
+      "TelegramBotProxyAddressAndPort": "127.0.0.1:8080",
+      "TelegramBotProxyLogin": "socks5ProxyLogin",
+      "TelegramBotProxyPassword": "password",
+      "TelegramUserList": [
+        "user01",
+        "user01",
+        "user03"
+      ]
+
+    }
+  ]
+}
