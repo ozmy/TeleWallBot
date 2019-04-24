@@ -1,6 +1,6 @@
 #**TeleWall**
 
-#About
+# About
     
 Project to control firewalld via Telegram.
 Allows you to add and remove ip to the trusted zone firewalld.
