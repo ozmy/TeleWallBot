@@ -15,7 +15,7 @@ import (
 )
 
 /*
-appcnf.json config struct
+appcnf.json config
 */
 type SAppConfig struct {
 	App []struct {
