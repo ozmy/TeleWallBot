@@ -5,7 +5,7 @@
       "TelegramBotDenyAccessMessage": "Access Deny",
       "TelegramBotToken": "botkey",
       "TelegramBotPanicTime": 1,
-      "TelegramBotErrorUserInput": "Wrong command or wrong ip address",
+      "TelegramBotErrorUserInput": "Wrong command or ip address",
       "TelegramBotCommandEnableIP": "The <enable ip> command were sent",
       "TelegramBotCommandDisableIP": "The <disable ip> command were sent",
       "TelegramBotCommandDisableAll": "The <disable all ip> command were sent",
