@@ -25,7 +25,7 @@ Config File -  appcnf.json
 5. Copy file telewall.service to /etc/systemd/system/
 6. systemctl enable telewall
 7. systemctl start telewall
-8. give the command to bot
+8. Send command command to bot
 
 
 # Bot Commands
