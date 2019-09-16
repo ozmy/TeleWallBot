@@ -86,7 +86,7 @@ func fPanicModeOn(timemin int) {
 /*
 Enable IP
 */
-func fEnableIp(ipin string, zonePath *string) {
+func fEnableIp(ipin string, zonePath string) {
 
 	ipaddr := net.ParseIP(ipin)
 
@@ -111,7 +111,7 @@ func fEnableIp(ipin string, zonePath *string) {
 
 	defer conn.Close()
 
-	obj := conn.Object("org.fedoraproject.FirewallD1", dbus.ObjectPath(*zonePath))
+	obj := conn.Object("org.fedoraproject.FirewallD1", dbus.ObjectPath(zonePath))
 
 	call := obj.Call(callMethod, 0, stipaddr)
 	if call.Err != nil {
@@ -130,7 +130,7 @@ func fEnableIp(ipin string, zonePath *string) {
 /*
 Disable IP
 */
-func fDisableIp(ipin string, zonePath *string, cre bool) {
+func fDisableIp(ipin string, zonePath string, cre bool) {
 
 	ipaddr := net.ParseIP(ipin)
 
@@ -155,7 +155,7 @@ func fDisableIp(ipin string, zonePath *string, cre bool) {
 
 	defer conn.Close()
 
-	obj := conn.Object("org.fedoraproject.FirewallD1", dbus.ObjectPath(*zonePath))
+	obj := conn.Object("org.fedoraproject.FirewallD1", dbus.ObjectPath(zonePath))
 
 	call := obj.Call(callMethod, 0, stipaddr)
 	if call.Err != nil {
@@ -187,7 +187,7 @@ func fDisableIp(ipin string, zonePath *string, cre bool) {
 /*
 Delete all ip in Trusted Zone
 */
-func fDisableAllIp(zonePath *string, cre bool) {
+func fDisableAllIp(zonePath string, cre bool) {
 
 	callMethod := "org.fedoraproject.FirewallD1.config.zone.getSources"
 
@@ -208,7 +208,7 @@ func fDisableAllIp(zonePath *string, cre bool) {
 
 	defer conn.Close()
 
-	obj := conn.Object("org.fedoraproject.FirewallD1", dbus.ObjectPath(*zonePath))
+	obj := conn.Object("org.fedoraproject.FirewallD1", dbus.ObjectPath(zonePath))
 
 	var s []string
 
@@ -256,7 +256,7 @@ func fDisableAllIp(zonePath *string, cre bool) {
 /*
 List IP in Trusted Zone
 */
-func fStatusIp(zonePath *string) string {
+func fStatusIp(zonePath string) string {
 
 	callMethod := "org.fedoraproject.FirewallD1.config.zone.getSources"
 
@@ -277,7 +277,7 @@ func fStatusIp(zonePath *string) string {
 
 	defer conn.Close()
 
-	obj := conn.Object("org.fedoraproject.FirewallD1", dbus.ObjectPath(*zonePath))
+	obj := conn.Object("org.fedoraproject.FirewallD1", dbus.ObjectPath(zonePath))
 	var s []string
 	call := obj.Call(callMethod, 0).Store(&s)
 	if call != nil {
@@ -300,6 +300,7 @@ s - Status
 p - Panic
 r - Reload
 f - Full Reload
+h - Print Help
 */
 func fParceCommand(parsestring string) (int, string, bool) {
 
@@ -327,8 +328,8 @@ func fParceCommand(parsestring string) (int, string, bool) {
 		cnt = true
 	}
 
-	//command s, r, f, l, p
-	if prs == "s" || prs == "r" || prs == "f" || prs == "l" || prs == "p" {
+	//command s, r, f, l, p, h
+	if prs == "s" || prs == "r" || prs == "f" || prs == "l" || prs == "p" || prs == "h" {
 		commandstr = prs
 		cnt = true
 	}
@@ -361,6 +362,8 @@ func fParceCommand(parsestring string) (int, string, bool) {
 	case "f":
 		comnum = 7
 		break
+	case "h":
+		comnum = 8
 	}
 
 	//if the command contains ip
@@ -617,6 +620,7 @@ func main() {
 			mcomnum := 0
 			mipparse := "0"
 			merrorflag := true
+
 			//start command handler
 			mcomnum, mipparse, merrorflag = fParceCommand(textmsg)
 
@@ -628,19 +632,19 @@ func main() {
 				switch mcomnum {
 
 				case 1:
-					fEnableIp(mipparse, &dbusZonePath)
+					fEnableIp(mipparse, dbusZonePath)
 					txttotlg = config.App[0].TelegramBotCommandEnableIP
 					break
 				case 2:
-					fDisableIp(mipparse, &dbusZonePath, config.App[0].TelegramBotCompleteReloadEnable)
+					fDisableIp(mipparse, dbusZonePath, config.App[0].TelegramBotCompleteReloadEnable)
 					txttotlg = config.App[0].TelegramBotCommandDisableIP
 					break
 				case 3:
-					fDisableAllIp(&dbusZonePath, config.App[0].TelegramBotCompleteReloadEnable)
+					fDisableAllIp(dbusZonePath, config.App[0].TelegramBotCompleteReloadEnable)
 					txttotlg = config.App[0].TelegramBotCommandDisableAll
 					break
 				case 4:
-					txttotlg = fStatusIp(&dbusZonePath)
+					txttotlg = fStatusIp(dbusZonePath)
 					txttotlglen := len(txttotlg)
 					if txttotlglen == 0 {
 						txttotlg = config.App[0].TelegramBotIPListIsEmpty
@@ -664,6 +668,15 @@ func main() {
 					bot.Send(msg)
 					reloadFireWall(true)
 					break
+				case 8:
+					txttotlg =  "*E* - Enable\n" +
+								"*D* - Disable ip\n" +
+								"*L* - Disable All\n" +
+								"*S* - Status\n" +
+								"*P* - Panic\n" +
+								"*R* - Soft Firewall Reload\n" +
+								"*F* - Full Firewall Reload\n" +
+								"*H* - Print This Help\n"
 				}
 			}
 		} else {
@@ -672,6 +685,7 @@ func main() {
 
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, txttotlg)
 		msg.ReplyToMessageID = update.Message.MessageID
+		msg.ParseMode = "markdown"
 		go bot.Send(msg)
 	}
 
