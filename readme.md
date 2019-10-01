@@ -37,6 +37,7 @@ Config File -  appcnf.json
 5. p             - Panic Mode On (default panic 1 min)
 6. R             - Reload Firewall
 7. F             - Full Reload Firewall
+8. H             - Help
 
 
 # License
