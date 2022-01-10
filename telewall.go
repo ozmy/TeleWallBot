@@ -3,15 +3,17 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/godbus/dbus"
-	"golang.org/x/net/proxy"
+
 	"log"
 	"net"
 	"net/http"
 	"os"
 	"strings"
 	"time"
+
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/godbus/dbus"
+	"golang.org/x/net/proxy"
 )
 
 /*
@@ -570,10 +572,11 @@ func main() {
 	//change proxy mode
 	if config.App[0].TelegramBotProxyEnable == true {
 		socksClient := socksProxyClient(config.App[0].TelegramBotProxyAddressAndPort, config.App[0].TelegramBotProxyLogin, config.App[0].TelegramBotProxyPassword)
-		bot, err = tgbotapi.NewBotAPIWithClient(config.App[0].TelegramBotToken, socksClient)
+		bot, err = tgbotapi.NewBotAPIWithClient(config.App[0].TelegramBotToken, "Default01", socksClient)
 		if err != nil {
 			log.Panic(err)
 		}
+
 	} else {
 
 		bot, err = tgbotapi.NewBotAPI(config.App[0].TelegramBotToken)
@@ -586,7 +589,7 @@ func main() {
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
-	updates, err := bot.GetUpdatesChan(u)
+	updates := bot.GetUpdatesChan(u)
 
 	for update := range updates {
 		if update.Message == nil { //waiting for a message
@@ -669,14 +672,14 @@ func main() {
 					reloadFireWall(true)
 					break
 				case 8:
-					txttotlg =  "*E* - Enable\n" +
-								"*D* - Disable ip\n" +
-								"*L* - Disable All\n" +
-								"*S* - Status\n" +
-								"*P* - Panic\n" +
-								"*R* - Soft Firewall Reload\n" +
-								"*F* - Full Firewall Reload\n" +
-								"*H* - Print This Help\n"
+					txttotlg = "*E* - Enable\n" +
+						"*D* - Disable ip\n" +
+						"*L* - Disable All\n" +
+						"*S* - Status\n" +
+						"*P* - Panic\n" +
+						"*R* - Soft Firewall Reload\n" +
+						"*F* - Full Firewall Reload\n" +
+						"*H* - Print This Help\n"
 				}
 			}
 		} else {
